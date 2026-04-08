@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PathogenAtlas — Infectious Disease Encyclopedia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Mono:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav id="navbar">
+  <div class="nav-logo">PathogenAtlas</div>
+  <div class="nav-links">
+    <a href="#home" class="nav-link active" data-page="home">Home</a>
+    <a href="#checker" class="nav-link" data-page="checker">Symptom Checker</a>
+    <a href="#bacterial" class="nav-link" data-page="bacterial">Bacterial</a>
+    <a href="#viral" class="nav-link" data-page="viral">Viral</a>
+    <a href="#fungal" class="nav-link" data-page="fungal">Fungal</a>
+    <a href="#protozoan" class="nav-link" data-page="protozoan">Protozoan</a>
+  </div>
+  <div class="nav-burger" id="navBurger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- PAGES CONTAINER -->
+<div id="pages">
+
+<!-- ===== HOME PAGE ===== -->
+<section id="page-home" class="page active">
+  <div class="hero">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero-content">
+      <div class="hero-tag">Microbiology Reference</div>
+      <h1 class="hero-title">Pathogen<br><em>Atlas</em></h1>
+      <p class="hero-sub">A comprehensive encyclopedia of infectious diseases — bacterial, viral, fungal, and protozoan — with AI-powered symptom diagnosis.</p>
+      <div class="hero-cta">
+        <button class="btn-primary" onclick="navigate('checker')">Check Symptoms</button>
+        <button class="btn-ghost" onclick="navigate('bacterial')">Browse Diseases</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">80+</span><span class="stat-lbl">Diseases</span></div>
+      <div class="stat"><span class="stat-num">4</span><span class="stat-lbl">Categories</span></div>
+      <div class="stat"><span class="stat-num">200+</span><span class="stat-lbl">Symptoms</span></div>
+    </div>
+  </div>
+
+  <div class="category-grid">
+    <div class="cat-card" onclick="navigate('bacterial')">
+      <div class="cat-icon" id="catBact">
+        <canvas class="cat-canvas" width="120" height="120"></canvas>
+      </div>
+      <h3>Bacterial</h3>
+      <p>Diseases caused by pathogenic bacteria including tuberculosis, cholera, typhoid, and more.</p>
+      <span class="cat-count">22 Diseases</span>
+    </div>
+    <div class="cat-card" onclick="navigate('viral')">
+      <div class="cat-icon" id="catViral">
+        <canvas class="cat-canvas" width="120" height="120"></canvas>
+      </div>
+      <h3>Viral</h3>
+      <p>Illnesses from viruses including influenza, HIV, dengue, measles and hepatitis.</p>
+      <span class="cat-count">22 Diseases</span>
+    </div>
+    <div class="cat-card" onclick="navigate('fungal')">
+      <div class="cat-icon" id="catFungal">
+        <canvas class="cat-canvas" width="120" height="120"></canvas>
+      </div>
+      <h3>Fungal</h3>
+      <p>Mycotic infections from fungi such as Candida, Aspergillus, and dermatophytes.</p>
+      <span class="cat-count">18 Diseases</span>
+    </div>
+    <div class="cat-card" onclick="navigate('protozoan')">
+      <div class="cat-icon" id="catProto">
+        <canvas class="cat-canvas" width="120" height="120"></canvas>
+      </div>
+      <h3>Protozoan</h3>
+      <p>Parasitic diseases from protozoa including malaria, leishmaniasis, and trypanosomiasis.</p>
+      <span class="cat-count">16 Diseases</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SYMPTOM CHECKER PAGE ===== -->
+<section id="page-checker" class="page">
+  <div class="checker-wrap">
+    <div class="checker-header">
+      <div class="page-tag">AI-Powered</div>
+      <h2>Symptom <em>Checker</em></h2>
+      <p>Describe your symptoms and we'll identify probable diseases, causative organisms, and recommended treatments.</p>
+    </div>
+    <div class="checker-input-area">
+      <div class="symptom-tags-container" id="symptomTagsContainer">
+        <input type="text" id="symptomInput" placeholder="Type a symptom and press Enter (e.g. fever, cough, rash...)" autocomplete="off">
+      </div>
+      <div class="symptom-suggestions" id="symptomSuggestions"></div>
+      <div class="selected-symptoms" id="selectedSymptoms"></div>
+      <button class="btn-primary btn-analyze" id="analyzeBtn" onclick="analyzeSymptoms()">Analyze Symptoms</button>
+    </div>
+
+    <div class="checker-results" id="checkerResults" style="display:none">
+      <h3>Probable Diagnoses</h3>
+      <div class="results-grid" id="resultsGrid"></div>
+    </div>
+
+    <div class="disease-detail-modal" id="diseaseModal" style="display:none">
+      <div class="modal-overlay" onclick="closeModal()"></div>
+      <div class="modal-content">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <div class="modal-body" id="modalBody"></div>
+        <canvas id="animCanvas" width="500" height="300"></canvas>
+        <div class="anim-label" id="animLabel"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== BACTERIAL PAGE ===== -->
+<section id="page-bacterial" class="page">
+  <div class="disease-page-wrap">
+    <div class="page-header bact-header">
+      <div class="page-tag">Category</div>
+      <h2>Bacterial <em>Diseases</em></h2>
+      <p>Infections caused by pathogenic bacteria that invade host tissue and release toxins.</p>
+    </div>
+    <div class="disease-list" id="bacterialList"></div>
+  </div>
+</section>
+
+<!-- ===== VIRAL PAGE ===== -->
+<section id="page-viral" class="page">
+  <div class="disease-page-wrap">
+    <div class="page-header viral-header">
+      <div class="page-tag">Category</div>
+      <h2>Viral <em>Diseases</em></h2>
+      <p>Illnesses caused by viruses that hijack host cells to replicate and spread.</p>
+    </div>
+    <div class="disease-list" id="viralList"></div>
+  </div>
+</section>
+
+<!-- ===== FUNGAL PAGE ===== -->
+<section id="page-fungal" class="page">
+  <div class="disease-page-wrap">
+    <div class="page-header fungal-header">
+      <div class="page-tag">Category</div>
+      <h2>Fungal <em>Diseases</em></h2>
+      <p>Mycotic infections from pathogenic fungi affecting skin, lungs, and systemic organs.</p>
+    </div>
+    <div class="disease-list" id="fungalList"></div>
+  </div>
+</section>
+
+<!-- ===== PROTOZOAN PAGE ===== -->
+<section id="page-protozoan" class="page">
+  <div class="disease-page-wrap">
+    <div class="page-header proto-header">
+      <div class="page-tag">Category</div>
+      <h2>Protozoan <em>Diseases</em></h2>
+      <p>Parasitic infections from single-celled eukaryotic protozoa spread via vectors or contaminated sources.</p>
+    </div>
+    <div class="disease-list" id="protozoanList"></div>
+  </div>
+</section>
+
+</div><!-- end pages -->
+
+<!-- DISEASE CARD MODAL (for browse pages) -->
+<div class="disease-modal-wrap" id="browseModal" style="display:none">
+  <div class="modal-overlay" onclick="closeBrowseModal()"></div>
+  <div class="modal-content large-modal">
+    <button class="modal-close" onclick="closeBrowseModal()">✕</button>
+    <div id="browseModalBody"></div>
+    <canvas id="browseAnimCanvas" width="560" height="320"></canvas>
+    <div class="anim-label" id="browseAnimLabel"></div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="animations.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
